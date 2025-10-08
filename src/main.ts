@@ -12,7 +12,7 @@ container.style.height = "100vh";
 container.style.backgroundColor = "#fff9d6"; // pale yellow
 document.body.append(container);
 
-/*const counterDiv: HTMLDivElement = document.createElement("div");
+const counterDiv: HTMLDivElement = document.createElement("div");
 counterDiv.id = "counterDiv";
 counterDiv.textContent = "bees clicked: 0";
 counterDiv.style.position = "absolute";
@@ -26,7 +26,7 @@ counterDiv.style.color = "#333";
 counterDiv.style.zIndex = "1000";
 counterDiv.style.background = "rgba(255, 255, 255, 0.6)";
 counterDiv.style.backdropFilter = "blur(4px)";
-counterDiv.style.boxShadow = "0 0 10px rgba(255, 255, 200, 0.4)";*/
+counterDiv.style.boxShadow = "0 0 10px rgba(255, 255, 200, 0.4)";
 
 const beeImg: HTMLImageElement = document.createElement("img");
 beeImg.src = beeImage;
@@ -36,7 +36,7 @@ beeImg.style.transform = "scale(0.4)";
 beeImg.style.cursor = "pointer";
 beeImg.style.zIndex = "2";
 
-/*let counter = 0;
+let counter = 0;
 beeImg.addEventListener("click", () => {
   counter += 1;
   counterDiv.textContent = `bees clicked: ${counter}`;
@@ -44,7 +44,7 @@ beeImg.addEventListener("click", () => {
   beeImg.classList.remove("bounce");
   void beeImg.offsetWidth;
   beeImg.classList.add("bounce");
-});*/
+});
 
 const btn: HTMLButtonElement = document.createElement("button");
 btn.textContent = "🐝 Click the Bee!";
@@ -63,4 +63,4 @@ btn.addEventListener("click", () => {
   beeImg.classList.add("bounce");
 });
 
-container.append(beeImg, /*counterDiv*/ btn);
+container.append(beeImg, counterDiv, btn);
