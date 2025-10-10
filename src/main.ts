@@ -41,18 +41,22 @@ beeImg.style.zIndex = "2";
 
 beeWrap.appendChild(beeImg);
 
-const passiveRatePerSecond = 1;
-
 let counter = 0;
+let beesPerSecond = 0;
+
+function renderCount() {
+  counterDiv.textContent = `bees clicked: ${Math.floor(counter).toFixed(2)}`;
+
+  workerBee.disabled = counter < 10;
+
+  workerBee.textContent =
+    `Hire Worker Bee (+1/s) — Cost: 10 — Rate: ${beesPerSecond}/s`;
+}
 
 function bounce() {
   beeWrap.classList.remove("bounce");
   void beeWrap.offsetWidth;
   beeWrap.classList.add("bounce");
-}
-
-function renderCount() {
-  counterDiv.textContent = `bees clicked: ${Math.floor(counter).toFixed(2)}`;
 }
 
 beeImg.addEventListener("click", () => {
@@ -78,13 +82,35 @@ btn.addEventListener("click", () => {
   bounce();
 });
 
+const workerBee: HTMLButtonElement = document.createElement("button");
+workerBee.style.position = "absolute";
+workerBee.style.top = "150px";
+workerBee.style.right = "50px";
+workerBee.style.padding = "8px 14px";
+workerBee.style.fontSize = "14px";
+workerBee.style.backgroundColor = "#f6de6d";
+workerBee.style.color = "#000";
+workerBee.style.border = "none";
+workerBee.style.borderRadius = "10px";
+workerBee.style.cursor = "pointer";
+workerBee.disabled = true; // start disabled until you have 10
+container.appendChild(workerBee);
+
+workerBee.addEventListener("click", () => {
+  if (counter >= 10) {
+    counter -= 10;
+    beesPerSecond += 1;
+    renderCount();
+  }
+});
+
 let lastFrame = performance.now();
 
 function frame(now: number) {
   const dtSeconds = (now - lastFrame) / 1000;
   lastFrame = now;
 
-  counter += passiveRatePerSecond * dtSeconds;
+  counter += beesPerSecond * dtSeconds;
 
   renderCount();
 
@@ -97,3 +123,5 @@ requestAnimationFrame((t) => {
 });
 
 container.append(beeWrap, counterDiv, btn);
+
+renderCount();
