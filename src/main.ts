@@ -12,7 +12,6 @@ container.style.height = "100vh";
 container.style.backgroundColor = "#fff9d6";
 document.body.append(container);
 
-
 const counterDiv: HTMLDivElement = document.createElement("div");
 counterDiv.id = "counterDiv";
 counterDiv.textContent = "bees clicked: 0";
@@ -44,22 +43,17 @@ beeWrap.appendChild(beeImg);
 
 let counter = 0;
 function bounce() {
-  
   beeWrap.classList.remove("bounce");
   void beeWrap.offsetWidth; // restart animation
   beeWrap.classList.add("bounce");
-  
 }
 
 function autoClick() {
-  if ("click") {
-    counter += 1
-    counterDiv.textContent = `bees clicked: ${counter}`;
-  }
-  
+  counter += 1;
+  counterDiv.textContent = `bees clicked: ${counter}`;
 }
 
-let clickTimer = setInterval(() => autoClick(), 1000);
+setInterval(autoClick, 1000);
 
 beeImg.addEventListener("click", () => {
   counter += 1;
@@ -83,6 +77,5 @@ btn.addEventListener("click", () => {
   counterDiv.textContent = `bees clicked: ${counter}`;
   bounce();
 });
-
 
 container.append(beeWrap, counterDiv, btn);
