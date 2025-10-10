@@ -9,8 +9,9 @@ container.style.flexDirection = "column";
 container.style.alignItems = "center";
 container.style.justifyContent = "center";
 container.style.height = "100vh";
-container.style.backgroundColor = "#fff9d6"; // pale yellow
+container.style.backgroundColor = "#fff9d6";
 document.body.append(container);
+
 
 const counterDiv: HTMLDivElement = document.createElement("div");
 counterDiv.id = "counterDiv";
@@ -28,6 +29,9 @@ counterDiv.style.background = "rgba(255, 255, 255, 0.6)";
 counterDiv.style.backdropFilter = "blur(4px)";
 counterDiv.style.boxShadow = "0 0 10px rgba(255, 255, 200, 0.4)";
 
+const beeWrap = document.createElement("div");
+beeWrap.className = "bee-wrap";
+
 const beeImg: HTMLImageElement = document.createElement("img");
 beeImg.src = beeImage;
 beeImg.alt = "Bee";
@@ -36,14 +40,31 @@ beeImg.style.transform = "scale(0.4)";
 beeImg.style.cursor = "pointer";
 beeImg.style.zIndex = "2";
 
+beeWrap.appendChild(beeImg);
+
 let counter = 0;
+function bounce() {
+  
+  beeWrap.classList.remove("bounce");
+  void beeWrap.offsetWidth; // restart animation
+  beeWrap.classList.add("bounce");
+  
+}
+
+function autoClick() {
+  if ("click") {
+    counter += 1
+    counterDiv.textContent = `bees clicked: ${counter}`;
+  }
+  
+}
+
+let clickTimer = setInterval(() => autoClick(), 1000);
+
 beeImg.addEventListener("click", () => {
   counter += 1;
   counterDiv.textContent = `bees clicked: ${counter}`;
-
-  beeImg.classList.remove("bounce");
-  void beeImg.offsetWidth;
-  beeImg.classList.add("bounce");
+  bounce();
 });
 
 const btn: HTMLButtonElement = document.createElement("button");
@@ -58,9 +79,10 @@ btn.style.borderRadius = "8px";
 btn.style.cursor = "pointer";
 btn.style.zIndex = "3";
 btn.addEventListener("click", () => {
-  beeImg.classList.remove("bounce");
-  void beeImg.offsetWidth;
-  beeImg.classList.add("bounce");
+  counter += 1;
+  counterDiv.textContent = `bees clicked: ${counter}`;
+  bounce();
 });
 
-container.append(beeImg, counterDiv, btn);
+
+container.append(beeWrap, counterDiv, btn);

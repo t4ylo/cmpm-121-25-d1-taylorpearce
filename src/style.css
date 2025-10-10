@@ -1,5 +1,21 @@
-.icon {
-  width: 64px;
-  vertical-align: top;
-  border: 1px solid salmon;
+
+.bee-image {
+  image-rendering: pixelated;
+}
+
+.bee-wrap {
+  display: inline-block;
+  will-change: transform;
+}
+
+@keyframes bounce {
+  0%   { transform: translateY(0) scale(1); }
+  30%  { transform: translateY(-12px) scale(1.1); }
+  60%  { transform: translateY(0) scale(0.98); }
+  80%  { transform: translateY(-6px) scale(1.05); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.bounce {
+  animation: bounce 0.35s ease;
 }
