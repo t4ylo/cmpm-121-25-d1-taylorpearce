@@ -41,23 +41,23 @@ beeImg.style.zIndex = "2";
 
 beeWrap.appendChild(beeImg);
 
+const passiveRatePerSecond = 1;
+
 let counter = 0;
+
 function bounce() {
   beeWrap.classList.remove("bounce");
-  void beeWrap.offsetWidth; // restart animation
+  void beeWrap.offsetWidth;
   beeWrap.classList.add("bounce");
 }
 
-function autoClick() {
-  counter += 1;
-  counterDiv.textContent = `bees clicked: ${counter}`;
+function renderCount() {
+  counterDiv.textContent = `bees clicked: ${Math.floor(counter).toFixed(2)}`;
 }
-
-setInterval(autoClick, 1000);
 
 beeImg.addEventListener("click", () => {
   counter += 1;
-  counterDiv.textContent = `bees clicked: ${counter}`;
+  renderCount();
   bounce();
 });
 
@@ -74,8 +74,26 @@ btn.style.cursor = "pointer";
 btn.style.zIndex = "3";
 btn.addEventListener("click", () => {
   counter += 1;
-  counterDiv.textContent = `bees clicked: ${counter}`;
+  renderCount();
   bounce();
+});
+
+let lastFrame = performance.now();
+
+function frame(now: number) {
+  const dtSeconds = (now - lastFrame) / 1000;
+  lastFrame = now;
+
+  counter += passiveRatePerSecond * dtSeconds;
+
+  renderCount();
+
+  requestAnimationFrame(frame);
+}
+
+requestAnimationFrame((t) => {
+  lastFrame = t;
+  requestAnimationFrame(frame);
 });
 
 container.append(beeWrap, counterDiv, btn);
