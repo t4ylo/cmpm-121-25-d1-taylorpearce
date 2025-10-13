@@ -54,7 +54,7 @@ statsDiv.append(
   queenCountSpan,
   document.createTextNode("  •  Total rate: "),
   totalRateSpan,
-  document.createTextNode("/sec"),
+  document.createTextNode(" Bees/sec"),
 );
 
 container.appendChild(statsDiv);
@@ -80,9 +80,21 @@ let queens = 0;
 const WORKER_RATE = 0.1;
 const DRONE_RATE = 2.0;
 const QUEEN_RATE = 50.0;
-const WORKER_COST = 10;
-const DRONE_COST = 100;
-const QUEEN_COST = 1000;
+const BASE_WORKER_COST = 10;
+const BASE_DRONE_COST = 100;
+const BASE_QUEEN_COST = 1000;
+
+function currentWorkerCost(): number {
+  return BASE_WORKER_COST * Math.pow(1.15, workers);
+}
+
+function currentDroneCost(): number {
+  return BASE_DRONE_COST * Math.pow(1.15, drones);
+}
+
+function currentQueenCost(): number {
+  return BASE_QUEEN_COST * Math.pow(1.15, queens);
+}
 
 function totalRate(): number {
   return workers * WORKER_RATE + drones * DRONE_RATE + queens * QUEEN_RATE;
@@ -91,20 +103,22 @@ function totalRate(): number {
 function renderCount() {
   counterDiv.textContent = `Bees Clicked: ${counter.toFixed(1)}`;
 
-  workerBee.disabled = counter < WORKER_COST;
+  workerBee.disabled = counter < currentWorkerCost();
 
   workerBee.textContent =
-    `Hire Worker Bee (+0.1/sec) — Cost: ${WORKER_COST} — ` +
+    `Hire Worker Bee (+0.1/sec) — Cost: ${currentWorkerCost().toFixed(1)} — ` +
     `Rate: ${(workers * WORKER_RATE).toFixed(1)} Bees/sec`;
 
-  droneBee.disabled = counter < DRONE_COST;
+  droneBee.disabled = counter < currentDroneCost();
 
-  droneBee.textContent = `Hire Drone Bee (+2.0/sec) — Cost: ${DRONE_COST} — ` +
+  droneBee.textContent =
+    `Hire Drone Bee (+2.0/sec) — Cost: ${currentDroneCost().toFixed(1)}  — ` +
     `Rate: ${(drones * DRONE_RATE).toFixed(1)} Bees/sec`;
 
-  queenBee.disabled = counter < QUEEN_COST;
+  queenBee.disabled = counter < currentQueenCost();
 
-  queenBee.textContent = `Hire Queen Bee (+50.0/sec) — Cost: ${QUEEN_COST} — ` +
+  queenBee.textContent =
+    `Hire Queen Bee (+50.0/sec) — Cost: ${currentQueenCost().toFixed(1)} — ` +
     `Rate: ${(queens * QUEEN_RATE).toFixed(1)} Bees/sec`;
 
   workerCountSpan.textContent = `${workers}`;
@@ -158,8 +172,9 @@ workerBee.disabled = true;
 container.appendChild(workerBee);
 
 workerBee.addEventListener("click", () => {
-  if (counter >= WORKER_COST) {
-    counter -= WORKER_COST;
+  const cost = currentWorkerCost();
+  if (counter >= cost) {
+    counter -= cost;
     workers += 1;
     renderCount();
   }
@@ -180,8 +195,9 @@ droneBee.disabled = true;
 container.appendChild(droneBee);
 
 droneBee.addEventListener("click", () => {
-  if (counter >= DRONE_COST) {
-    counter -= DRONE_COST;
+  const cost = currentDroneCost();
+  if (counter >= cost) {
+    counter -= cost;
     drones += 1;
     renderCount();
   }
@@ -202,8 +218,9 @@ queenBee.disabled = true;
 container.appendChild(queenBee);
 
 queenBee.addEventListener("click", () => {
-  if (counter >= QUEEN_COST) {
-    counter -= QUEEN_COST;
+  const cost = currentQueenCost();
+  if (counter >= cost) {
+    counter -= cost;
     queens += 1;
     renderCount();
   }
