@@ -1,4 +1,5 @@
 import beeImage from "./beebee.webp";
+import honeycombImage from "./honeycomb.png";
 import "./style.css";
 
 const container = document.createElement("div");
@@ -14,7 +15,7 @@ document.body.append(container);
 
 const counterDiv: HTMLDivElement = document.createElement("div");
 counterDiv.id = "counterDiv";
-counterDiv.textContent = "Bees Clicked: 0";
+counterDiv.textContent = "Honey Clicked: 0";
 counterDiv.style.position = "absolute";
 counterDiv.style.top = "16px";
 counterDiv.style.left = "16px";
@@ -54,23 +55,44 @@ statsDiv.append(
   queenCountSpan,
   document.createTextNode("  •  Total rate: "),
   totalRateSpan,
-  document.createTextNode(" Bees/sec"),
+  document.createTextNode(" Honey/sec"),
 );
 
 container.appendChild(statsDiv);
 
-const beeWrap = document.createElement("div");
-beeWrap.className = "bee-wrap";
+const mainButton = document.createElement("div");
+mainButton.className = "main-button";
+mainButton.style.position = "relative";
+mainButton.style.display = "inline-block";
+mainButton.style.cursor = "pointer";
+mainButton.style.width = "225px";
+mainButton.style.height = "225px";
+mainButton.style.marginBottom = "12px";
+
+const honeycombImg = document.createElement("img");
+honeycombImg.src = honeycombImage;
+honeycombImg.alt = "Honeycomb";
+honeycombImg.style.width = "100%";
+honeycombImg.style.height = "100%";
+honeycombImg.style.objectFit = "contain";
+honeycombImg.style.borderRadius = "50%";
 
 const beeImg: HTMLImageElement = document.createElement("img");
 beeImg.src = beeImage;
 beeImg.alt = "Bee";
-beeImg.className = "bee-image";
-beeImg.style.transform = "scale(0.4)";
-beeImg.style.cursor = "pointer";
+beeImg.style.position = "absolute";
+beeImg.style.top = "78%";
+beeImg.style.left = "30%";
+beeImg.style.transform = "translate(-50%, -50%) scale(0.38)";
 beeImg.style.zIndex = "2";
+beeImg.style.pointerEvents = "none";
 
-beeWrap.appendChild(beeImg);
+mainButton.className = "main-button";
+honeycombImg.className = "honeycomb-image";
+beeImg.className = "bee-image";
+
+mainButton.append(honeycombImg, beeImg);
+container.append(mainButton);
 
 let counter = 0;
 let workers = 0;
@@ -101,25 +123,25 @@ function totalRate(): number {
 }
 
 function renderCount() {
-  counterDiv.textContent = `Bees Clicked: ${counter.toFixed(1)}`;
+  counterDiv.textContent = `Honey Gathered: ${counter.toFixed(1)}`;
 
   workerBee.disabled = counter < currentWorkerCost();
 
   workerBee.textContent =
     `Hire Worker Bee (+0.1/sec) — Cost: ${currentWorkerCost().toFixed(1)} — ` +
-    `Rate: ${(workers * WORKER_RATE).toFixed(1)} Bees/sec`;
+    `Rate: ${(workers * WORKER_RATE).toFixed(1)} Honey/sec`;
 
   droneBee.disabled = counter < currentDroneCost();
 
   droneBee.textContent =
     `Hire Drone Bee (+2.0/sec) — Cost: ${currentDroneCost().toFixed(1)}  — ` +
-    `Rate: ${(drones * DRONE_RATE).toFixed(1)} Bees/sec`;
+    `Rate: ${(drones * DRONE_RATE).toFixed(1)} Honey/sec`;
 
   queenBee.disabled = counter < currentQueenCost();
 
   queenBee.textContent =
     `Hire Queen Bee (+50.0/sec) — Cost: ${currentQueenCost().toFixed(1)} — ` +
-    `Rate: ${(queens * QUEEN_RATE).toFixed(1)} Bees/sec`;
+    `Rate: ${(queens * QUEEN_RATE).toFixed(1)} Honey/sec`;
 
   workerCountSpan.textContent = `${workers}`;
   droneCountSpan.textContent = `${drones}`;
@@ -129,20 +151,21 @@ function renderCount() {
 }
 
 function bounce() {
-  beeWrap.classList.remove("bounce");
-  void beeWrap.offsetWidth;
-  beeWrap.classList.add("bounce");
+  mainButton.classList.remove("bounce");
+  void mainButton.offsetWidth;
+  mainButton.classList.add("bounce");
 }
 
-beeImg.addEventListener("click", () => {
+mainButton.addEventListener("click", () => {
   counter += 1;
   renderCount();
   bounce();
 });
 
 const btn: HTMLButtonElement = document.createElement("button");
-btn.textContent = "🐝 Click the Bee!";
-btn.style.marginTop = "20px";
+btn.textContent = "🐝 Tap the Honeycomb to Help Your Bee Gather Honey!";
+btn.style.position = "absolute";
+btn.style.bottom = "100px";
 btn.style.padding = "8px 14px";
 btn.style.fontSize = "14px";
 btn.style.backgroundColor = "#f6de6d";
@@ -244,6 +267,6 @@ requestAnimationFrame((t) => {
   requestAnimationFrame(frame);
 });
 
-container.append(beeWrap, counterDiv, btn);
+container.append(mainButton, counterDiv, btn);
 
 renderCount();

@@ -2,29 +2,54 @@
   image-rendering: pixelated;
 }
 
-.bee-wrap {
+.main-button {
+  position: relative;
   display: inline-block;
-  will-change: transform;
+  width: 160px;
+  height: 160px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
 }
 
-@keyframes bounce {
+.honeycomb-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
+@keyframes beeBounce {
   0% {
-    transform: translateY(0) scale(1);
+    transform: translate(-50%, -50%) scale(0.38);
   }
   30% {
-    transform: translateY(-12px) scale(1.1);
+    transform: translate(-50%, -58%) scale(0.39);
   }
   60% {
-    transform: translateY(0) scale(0.98);
-  }
-  80% {
-    transform: translateY(-6px) scale(1.05);
+    transform: translate(-50%, -50%) scale(0.37);
   }
   100% {
-    transform: translateY(0) scale(1);
+    transform: translate(-50%, -50%) scale(0.38);
+  }
+}
+@keyframes combPulse {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.04);
+  }
+  60% {
+    transform: scale(0.99);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
-.bounce {
-  animation: bounce 0.35s ease;
+.bounce .bee-image {
+  animation: beeBounce 0.35s ease;
+}
+.bounce .honeycomb-image {
+  animation: combPulse 0.35s ease;
 }
