@@ -40,17 +40,10 @@ statsDiv.style.color = "#333";
 statsDiv.style.zIndex = "1000";
 container.append(statsDiv);
 
-const workerCountSpan = document.createElement("span");
-const droneCountSpan = document.createElement("span");
-const queenCountSpan = document.createElement("span");
+const inventorySpan = document.createElement("span");
 const totalRateSpan = document.createElement("span");
 statsDiv.append(
-  document.createTextNode("Workers: "),
-  workerCountSpan,
-  document.createTextNode("  •  Drones: "),
-  droneCountSpan,
-  document.createTextNode("  •  Queens: "),
-  queenCountSpan,
+  inventorySpan,
   document.createTextNode("  •  Total rate: "),
   totalRateSpan,
   document.createTextNode(" Honey/sec"),
@@ -92,7 +85,9 @@ const clickHintBtn = document.createElement("button");
 clickHintBtn.textContent =
   "🐝 Tap the Honeycomb to Help Your Bee Gather Honey!";
 clickHintBtn.style.position = "absolute";
-clickHintBtn.style.bottom = "100px";
+clickHintBtn.style.bottom = "40px";
+clickHintBtn.style.left = "50%";
+clickHintBtn.style.transform = "translateX(-50%)";
 clickHintBtn.style.padding = "8px 14px";
 clickHintBtn.style.fontSize = "14px";
 clickHintBtn.style.backgroundColor = "#f6de6d";
@@ -111,33 +106,68 @@ shop.style.display = "grid";
 shop.style.gap = "16px";
 container.append(shop);
 
-type ItemKey = "worker" | "drone" | "queen";
+type ItemKey = "worker" | "drone" | "queen" | "frame" | "box";
+
 interface ItemDef {
   key: ItemKey;
   name: string;
   baseCost: number;
   rate: number;
+  description: string;
 }
+
 const PRICE_SCALE = 1.15;
 
 const availableItems: ItemDef[] = [
-  { key: "worker", name: "Hire Worker Bee", baseCost: 10, rate: 0.1 },
-  { key: "drone", name: "Hire Drone Bee", baseCost: 100, rate: 2.0 },
-  { key: "queen", name: "Hire Queen Bee", baseCost: 1000, rate: 50.0 },
+  {
+    key: "worker",
+    name: "Hire Worker Bee",
+    baseCost: 10,
+    rate: 0.1,
+    description: "Foragers that bring in a trickle of nectar.",
+  },
+  {
+    key: "drone",
+    name: "Hire Drone Bee",
+    baseCost: 100,
+    rate: 2.0,
+    description: "Big buzz, steady honey throughput.",
+  },
+  {
+    key: "queen",
+    name: "Hire Queen Bee",
+    baseCost: 1000,
+    rate: 50.0,
+    description: "Royal production line. Long live the queen!",
+  },
+  {
+    key: "frame",
+    name: "Add Hive Frame",
+    baseCost: 10_000,
+    rate: 1000.0,
+    description: "A fresh frame full of comb—storage and flow boost.",
+  },
+  {
+    key: "box",
+    name: "Install Bee Box",
+    baseCost: 100_000,
+    rate: 12_000.0,
+    description: "A new box added to the coloney. Honey river time.",
+  },
 ];
 
 let honey = 0;
-const counts: Record<ItemKey, number> = { worker: 0, drone: 0, queen: 0 };
+const counts = {
+  worker: 0,
+  drone: 0,
+  queen: 0,
+  frame: 0,
+  box: 0,
+} as Record<ItemKey, number>;
 
-// UI elements per item
-const buttons: Record<ItemKey, HTMLButtonElement> = {
-  worker: document.createElement("button"),
-  drone: document.createElement("button"),
-  queen: document.createElement("button"),
-};
-
+const buttons = {} as Record<ItemKey, HTMLButtonElement>;
 for (const def of availableItems) {
-  const btn = buttons[def.key];
+  const btn = document.createElement("button");
   btn.style.padding = "8px 14px";
   btn.style.fontSize = "14px";
   btn.style.backgroundColor = "#f6de6d";
@@ -146,6 +176,7 @@ for (const def of availableItems) {
   btn.style.borderRadius = "10px";
   btn.style.cursor = "pointer";
   btn.disabled = true;
+  btn.title = def.description;
 
   btn.addEventListener("click", () => {
     const cost = currentCost(def);
@@ -156,14 +187,28 @@ for (const def of availableItems) {
     }
   });
 
+  buttons[def.key] = btn;
   shop.append(btn);
 }
 
 function currentCost(def: ItemDef): number {
   return def.baseCost * Math.pow(PRICE_SCALE, counts[def.key]);
 }
+
 function totalRate(): number {
   return availableItems.reduce((sum, d) => sum + counts[d.key] * d.rate, 0);
+}
+
+function bounce() {
+  mainButton.classList.remove("bounce");
+  void mainButton.offsetWidth;
+  mainButton.classList.add("bounce");
+}
+
+function clickOnce() {
+  honey += 1;
+  render();
+  bounce();
 }
 
 function render() {
@@ -185,22 +230,15 @@ function render() {
       `Owned: ${owned} — Rate: ${perTypeRate.toFixed(1)} Honey/sec`;
   }
 
-  workerCountSpan.textContent = String(counts.worker);
-  droneCountSpan.textContent = String(counts.drone);
-  queenCountSpan.textContent = String(counts.queen);
+  inventorySpan.textContent = availableItems
+    .map((d) =>
+      `${d.name.replace(/^Hire |Add |Install /, "")}: ${counts[d.key]}`
+    )
+    .join("  •  ");
+
   totalRateSpan.textContent = totalRate().toFixed(1);
 }
 
-function bounce() {
-  mainButton.classList.remove("bounce");
-  void mainButton.offsetWidth;
-  mainButton.classList.add("bounce");
-}
-function clickOnce() {
-  honey += 1;
-  render();
-  bounce();
-}
 mainButton.addEventListener("click", clickOnce);
 clickHintBtn.addEventListener("click", clickOnce);
 
