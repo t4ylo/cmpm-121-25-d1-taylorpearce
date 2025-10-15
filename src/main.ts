@@ -131,7 +131,7 @@ const availableItems: ItemDef[] = [
     name: "Hire Drone Bee",
     baseCost: 100,
     rate: 2.0,
-    description: "Big buzz, steady honey throughput.",
+    description: "Big buzz, steady honey throughout.",
   },
   {
     key: "queen",
