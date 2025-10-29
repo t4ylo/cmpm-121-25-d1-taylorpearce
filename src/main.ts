@@ -81,22 +81,22 @@ beeImg.style.pointerEvents = "none";
 mainButton.append(honeycombImg, beeImg);
 container.append(mainButton);
 
-const clickHintBtn = document.createElement("button");
-clickHintBtn.textContent =
+const clickHintitemButton = document.createElement("button");
+clickHintitemButton.textContent =
   "🐝 Tap the Honeycomb to Help Your Bee Gather Honey!";
-clickHintBtn.style.position = "absolute";
-clickHintBtn.style.bottom = "40px";
-clickHintBtn.style.left = "50%";
-clickHintBtn.style.transform = "translateX(-50%)";
-clickHintBtn.style.padding = "8px 14px";
-clickHintBtn.style.fontSize = "14px";
-clickHintBtn.style.backgroundColor = "#f6de6d";
-clickHintBtn.style.color = "#000";
-clickHintBtn.style.border = "none";
-clickHintBtn.style.borderRadius = "8px";
-clickHintBtn.style.cursor = "pointer";
-clickHintBtn.style.zIndex = "3";
-container.append(clickHintBtn);
+clickHintitemButton.style.position = "absolute";
+clickHintitemButton.style.bottom = "40px";
+clickHintitemButton.style.left = "50%";
+clickHintitemButton.style.transform = "translateX(-50%)";
+clickHintitemButton.style.padding = "8px 14px";
+clickHintitemButton.style.fontSize = "14px";
+clickHintitemButton.style.backgroundColor = "#f6de6d";
+clickHintitemButton.style.color = "#000";
+clickHintitemButton.style.border = "none";
+clickHintitemButton.style.borderRadius = "8px";
+clickHintitemButton.style.cursor = "pointer";
+clickHintitemButton.style.zIndex = "3";
+container.append(clickHintitemButton);
 
 const shop = document.createElement("div");
 shop.style.position = "absolute";
@@ -167,18 +167,18 @@ const counts = {
 
 const buttons = {} as Record<ItemKey, HTMLButtonElement>;
 for (const def of availableItems) {
-  const btn = document.createElement("button");
-  btn.style.padding = "8px 14px";
-  btn.style.fontSize = "14px";
-  btn.style.backgroundColor = "#f6de6d";
-  btn.style.color = "#000";
-  btn.style.border = "none";
-  btn.style.borderRadius = "10px";
-  btn.style.cursor = "pointer";
-  btn.disabled = true;
-  btn.title = def.description;
+  const itemButton = document.createElement("button");
+  itemButton.style.padding = "8px 14px";
+  itemButton.style.fontSize = "14px";
+  itemButton.style.backgroundColor = "#f6de6d";
+  itemButton.style.color = "#000";
+  itemButton.style.border = "none";
+  itemButton.style.borderRadius = "10px";
+  itemButton.style.cursor = "pointer";
+  itemButton.disabled = true;
+  itemButton.title = def.description;
 
-  btn.addEventListener("click", () => {
+  itemButton.addEventListener("click", () => {
     const cost = currentCost(def);
     if (honey + 1e-9 >= cost) {
       honey -= cost;
@@ -187,8 +187,8 @@ for (const def of availableItems) {
     }
   });
 
-  buttons[def.key] = btn;
-  shop.append(btn);
+  buttons[def.key] = itemButton;
+  shop.append(itemButton);
 }
 
 function currentCost(def: ItemDef): number {
@@ -215,15 +215,15 @@ function render() {
   counterDiv.textContent = `Honey Gathered: ${honey.toFixed(1)}`;
 
   for (const def of availableItems) {
-    const btn = buttons[def.key];
+    const itemButton = buttons[def.key];
     const cost = currentCost(def);
     const owned = counts[def.key];
     const perTypeRate = owned * def.rate;
 
-    btn.disabled = honey + 1e-9 < cost;
-    btn.style.opacity = btn.disabled ? "0.7" : "1";
-    btn.style.cursor = btn.disabled ? "not-allowed" : "pointer";
-    btn.textContent =
+    itemButton.disabled = honey + 1e-9 < cost;
+    itemButton.style.opacity = itemButton.disabled ? "0.7" : "1";
+    itemButton.style.cursor = itemButton.disabled ? "not-allowed" : "pointer";
+    itemButton.textContent =
       `${def.name} (+${def.rate.toFixed(1)}/sec) — Cost: ${
         cost.toFixed(1)
       } — ` +
@@ -240,7 +240,7 @@ function render() {
 }
 
 mainButton.addEventListener("click", clickOnce);
-clickHintBtn.addEventListener("click", clickOnce);
+clickHintitemButton.addEventListener("click", clickOnce);
 
 let last = performance.now();
 function frame(now: number) {
