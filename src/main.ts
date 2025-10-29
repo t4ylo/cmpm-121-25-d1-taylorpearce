@@ -2,6 +2,54 @@ import beeImage from "./beebee.webp";
 import honeycombImage from "./honeycomb.png";
 import "./style.css";
 
+interface ItemDef {
+  key: ItemKey;
+  name: string;
+  baseCost: number;
+  rate: number;
+  description: string;
+}
+
+const PRICE_SCALE = 1.15;
+
+const availableItems: ItemDef[] = [
+  {
+    key: "worker",
+    name: "Hire Worker Bee",
+    baseCost: 10,
+    rate: 0.1,
+    description: "Foragers that bring in a trickle of nectar.",
+  },
+  {
+    key: "drone",
+    name: "Hire Drone Bee",
+    baseCost: 100,
+    rate: 2.0,
+    description: "Big buzz, steady honey throughout.",
+  },
+  {
+    key: "queen",
+    name: "Hire Queen Bee",
+    baseCost: 1000,
+    rate: 50.0,
+    description: "Royal production line. Long live the queen!",
+  },
+  {
+    key: "frame",
+    name: "Add Hive Frame",
+    baseCost: 10_000,
+    rate: 1000.0,
+    description: "A fresh frame full of comb—storage and flow boost.",
+  },
+  {
+    key: "box",
+    name: "Install Bee Box",
+    baseCost: 100_000,
+    rate: 12_000.0,
+    description: "A new box added to the coloney. Honey river time.",
+  },
+];
+
 const container = document.createElement("div");
 container.style.position = "relative";
 container.style.display = "flex";
@@ -107,54 +155,6 @@ shop.style.gap = "16px";
 container.append(shop);
 
 type ItemKey = "worker" | "drone" | "queen" | "frame" | "box";
-
-interface ItemDef {
-  key: ItemKey;
-  name: string;
-  baseCost: number;
-  rate: number;
-  description: string;
-}
-
-const PRICE_SCALE = 1.15;
-
-const availableItems: ItemDef[] = [
-  {
-    key: "worker",
-    name: "Hire Worker Bee",
-    baseCost: 10,
-    rate: 0.1,
-    description: "Foragers that bring in a trickle of nectar.",
-  },
-  {
-    key: "drone",
-    name: "Hire Drone Bee",
-    baseCost: 100,
-    rate: 2.0,
-    description: "Big buzz, steady honey throughout.",
-  },
-  {
-    key: "queen",
-    name: "Hire Queen Bee",
-    baseCost: 1000,
-    rate: 50.0,
-    description: "Royal production line. Long live the queen!",
-  },
-  {
-    key: "frame",
-    name: "Add Hive Frame",
-    baseCost: 10_000,
-    rate: 1000.0,
-    description: "A fresh frame full of comb—storage and flow boost.",
-  },
-  {
-    key: "box",
-    name: "Install Bee Box",
-    baseCost: 100_000,
-    rate: 12_000.0,
-    description: "A new box added to the coloney. Honey river time.",
-  },
-];
 
 let honey = 0;
 const counts = {
