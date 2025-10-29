@@ -2,6 +2,8 @@ import beeImage from "./beebee.webp";
 import honeycombImage from "./honeycomb.png";
 import "./style.css";
 
+//data and types setup
+
 interface ItemDef {
   key: ItemKey;
   name: string;
@@ -50,6 +52,8 @@ const availableItems: ItemDef[] = [
   },
 ];
 
+//DOM elements
+
 const container = document.createElement("div");
 container.style.position = "relative";
 container.style.display = "flex";
@@ -96,6 +100,8 @@ statsDiv.append(
   totalRateSpan,
   document.createTextNode(" Honey/sec"),
 );
+
+//images and style
 
 const mainButton = document.createElement("div");
 mainButton.className = "main-button";
@@ -154,6 +160,8 @@ shop.style.display = "grid";
 shop.style.gap = "16px";
 container.append(shop);
 
+//game state
+
 type ItemKey = "worker" | "drone" | "queen" | "frame" | "box";
 
 let honey = 0;
@@ -211,6 +219,8 @@ function clickOnce() {
   bounce();
 }
 
+//rendering
+
 function render() {
   counterDiv.textContent = `Honey Gathered: ${honey.toFixed(1)}`;
 
@@ -241,6 +251,8 @@ function render() {
 
 mainButton.addEventListener("click", clickOnce);
 clickHintitemButton.addEventListener("click", clickOnce);
+
+//game loop
 
 let last = performance.now();
 function frame(now: number) {
