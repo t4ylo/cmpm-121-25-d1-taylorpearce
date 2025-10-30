@@ -18,6 +18,43 @@
   border-radius: 16px;
 }
 
+/*this is the style for the upgrade images which is inspired by https://github.com/wendyzh05/D1 */
+.upgrade-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #f6de6d;
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 255, 200, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  min-width: 320px; /* tweak to taste */
+  text-align: left;
+}
+.upgrade-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(255, 220, 120, 0.6);
+}
+.upgrade-button:disabled {
+  cursor: not-allowed;
+}
+
+.upgrade-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  flex: 0 0 56px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.upgrade-label {
+  line-height: 1.25;
+  font: 600 14px system-ui, sans-serif;
+}
+
 @keyframes beeBounce {
   0% {
     transform: translate(-50%, -50%) scale(0.38);
@@ -52,4 +89,29 @@
 }
 .bounce .honeycomb-image {
   animation: combPulse 0.35s ease;
+}
+
+/*this is the animation for the number pop up which is inspired by https://github.com/inyoo403/D1.a */
+.floating-text {
+  position: absolute;
+  transform: translateX(-50%);
+  pointer-events: none;
+  user-select: none;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  animation: honey-float-up 1.2s ease-out forwards;
+  z-index: 10;
+}
+
+@keyframes honey-float-up {
+  from {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-50%, -80px);
+    opacity: 0;
+  }
 }

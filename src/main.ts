@@ -1,5 +1,11 @@
 import beeImage from "./beebee.webp";
 import honeycombImage from "./honeycomb.png";
+import queenBee from "./queenbee.webp";
+import workerBee from "./wokerbee.webp";
+import droneBee from "./dronebee.webp";
+import beeFrame from "./Adobe Express - file (2).png";
+import beeBox from "./Adobe Express - file (3).png";
+
 import "./style.css";
 
 //data and types setup
@@ -10,10 +16,10 @@ interface ItemDef {
   baseCost: number;
   rate: number;
   description: string;
+  image: string; // ⬅️ NEW
 }
 
-const PRICE_SCALE = 1.15;
-
+/*this is the code for the upgrade images which is inspired by https://github.com/wendyzh05/D1 */
 const availableItems: ItemDef[] = [
   {
     key: "worker",
@@ -21,6 +27,7 @@ const availableItems: ItemDef[] = [
     baseCost: 10,
     rate: 0.1,
     description: "Foragers that bring in a trickle of nectar.",
+    image: workerBee, // ⬅️
   },
   {
     key: "drone",
@@ -28,6 +35,7 @@ const availableItems: ItemDef[] = [
     baseCost: 100,
     rate: 2.0,
     description: "Big buzz, steady honey throughout.",
+    image: droneBee, // ⬅️
   },
   {
     key: "queen",
@@ -35,6 +43,7 @@ const availableItems: ItemDef[] = [
     baseCost: 1000,
     rate: 50.0,
     description: "Royal production line. Long live the queen!",
+    image: queenBee, // ⬅️
   },
   {
     key: "frame",
@@ -42,6 +51,7 @@ const availableItems: ItemDef[] = [
     baseCost: 10_000,
     rate: 1000.0,
     description: "A fresh frame full of comb—storage and flow boost.",
+    image: beeFrame, // ⬅️
   },
   {
     key: "box",
@@ -49,8 +59,11 @@ const availableItems: ItemDef[] = [
     baseCost: 100_000,
     rate: 12_000.0,
     description: "A new box added to the coloney. Honey river time.",
+    image: beeBox, // ⬅️
   },
 ];
+
+const PRICE_SCALE = 1.15;
 
 //DOM elements
 
@@ -173,20 +186,28 @@ const counts = {
   box: 0,
 } as Record<ItemKey, number>;
 
-const buttons = {} as Record<ItemKey, HTMLButtonElement>;
-for (const def of availableItems) {
-  const itemButton = document.createElement("button");
-  itemButton.style.padding = "8px 14px";
-  itemButton.style.fontSize = "14px";
-  itemButton.style.backgroundColor = "#f6de6d";
-  itemButton.style.color = "#000";
-  itemButton.style.border = "none";
-  itemButton.style.borderRadius = "10px";
-  itemButton.style.cursor = "pointer";
-  itemButton.disabled = true;
-  itemButton.title = def.description;
+/*this is the code for the upgrade images which is inspired by https://github.com/wendyzh05/D1 */
+type ButtonRefs = { button: HTMLButtonElement; label: HTMLSpanElement };
+const buttons: Record<ItemKey, ButtonRefs> = {} as Record<ItemKey, ButtonRefs>;
 
-  itemButton.addEventListener("click", () => {
+for (const def of availableItems) {
+  const button = document.createElement("button") as HTMLButtonElement;
+  button.className = "upgrade-button";
+  button.title = def.description;
+  button.disabled = true;
+
+  const img = document.createElement("img");
+  img.src = def.image;
+  img.alt = def.name;
+  img.className = "upgrade-img";
+
+  const label = document.createElement("span");
+  label.className = "upgrade-label";
+  label.textContent = def.name;
+
+  button.append(img, label);
+
+  button.addEventListener("click", () => {
     const cost = currentCost(def);
     if (honey + 1e-9 >= cost) {
       honey -= cost;
@@ -195,8 +216,8 @@ for (const def of availableItems) {
     }
   });
 
-  buttons[def.key] = itemButton;
-  shop.append(itemButton);
+  buttons[def.key] = { button, label };
+  shop.append(button);
 }
 
 function currentCost(def: ItemDef): number {
@@ -213,32 +234,34 @@ function bounce() {
   mainButton.classList.add("bounce");
 }
 
-function clickOnce() {
+/*this is the function for the number pop up which is inspired by https://github.com/inyoo403/D1.a */
+function showFloatingText(amount: number, x: number, y: number) {
+  const el = document.createElement("div");
+  el.className = "floating-text";
+  el.textContent = `+${amount.toFixed(1)}`;
+  const rect = container.getBoundingClientRect();
+  el.style.left = `${x - rect.left}px`;
+  el.style.top = `${y - rect.top}px`;
+  container.appendChild(el);
+  el.addEventListener("animationend", () => el.remove());
+}
+
+function clickOnce(ev?: MouseEvent) {
   honey += 1;
   render();
   bounce();
+
+  const rect = mainButton.getBoundingClientRect();
+  const x = ev?.clientX ?? rect.left + Math.random() * rect.width;
+  const y = ev?.clientY ?? rect.top + Math.random() * rect.height;
+
+  showFloatingText(1, x, y);
 }
 
 //rendering
 
 function render() {
   counterDiv.textContent = `Honey Gathered: ${honey.toFixed(1)}`;
-
-  for (const def of availableItems) {
-    const itemButton = buttons[def.key];
-    const cost = currentCost(def);
-    const owned = counts[def.key];
-    const perTypeRate = owned * def.rate;
-
-    itemButton.disabled = honey + 1e-9 < cost;
-    itemButton.style.opacity = itemButton.disabled ? "0.7" : "1";
-    itemButton.style.cursor = itemButton.disabled ? "not-allowed" : "pointer";
-    itemButton.textContent =
-      `${def.name} (+${def.rate.toFixed(1)}/sec) — Cost: ${
-        cost.toFixed(1)
-      } — ` +
-      `Owned: ${owned} — Rate: ${perTypeRate.toFixed(1)} Honey/sec`;
-  }
 
   inventorySpan.textContent = availableItems
     .map((d) =>
@@ -247,6 +270,24 @@ function render() {
     .join("  •  ");
 
   totalRateSpan.textContent = totalRate().toFixed(1);
+
+  /*this is the code for the upgrade images which is inspired by https://github.com/wendyzh05/D1 */
+  for (const def of availableItems) {
+    const { button, label } = buttons[def.key];
+    const cost = currentCost(def);
+    const owned = counts[def.key];
+    const perTypeRate = owned * def.rate;
+
+    button.disabled = honey + 1e-9 < cost;
+    button.style.opacity = button.disabled ? "0.7" : "1";
+    button.style.cursor = button.disabled ? "not-allowed" : "pointer";
+
+    label.textContent =
+      `${def.name} (+${def.rate.toFixed(1)}/sec) — Cost: ${
+        cost.toFixed(1)
+      } — ` +
+      `Owned: ${owned} — Rate: ${perTypeRate.toFixed(1)}/sec`;
+  }
 }
 
 mainButton.addEventListener("click", clickOnce);
